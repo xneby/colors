@@ -37,6 +37,11 @@ int max(int a, int b) {
 	return b;
 }
 
+bool isvalidansi(char c) {
+	if('0' <= c && c <= '9') return true;
+	return c ==';';
+}
+
 void initialize_terminal(void) {
 	struct termios term;
 	tcgetattr(STDIN_FILENO, &term);
@@ -77,7 +82,7 @@ void delete_last_character() {
 }
 
 void add_character(char c) {
-	if(buffer_length + 1 > buffer_size) {
+	if(buffer_length + 1 >= buffer_size) {
 		resize_buffer(max(6, buffer_size) * 2);
 	}
 	buffer[buffer_length++] = c;
@@ -116,7 +121,8 @@ bool read_and_parse_character() {
 			break;
 
 		default:
-			add_character(c);
+			if(isvalidansi(c))
+				add_character(c);
 	}
 
 	write_back();
